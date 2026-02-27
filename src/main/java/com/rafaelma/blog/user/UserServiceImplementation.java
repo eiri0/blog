@@ -6,14 +6,13 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImplementation implements UserService {
 
     private final UserRepository userRepository;
-    private ModelMapper mapper;
+    private final ModelMapper mapper;
 
     public UserServiceImplementation(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -23,31 +22,29 @@ public class UserServiceImplementation implements UserService {
     @Override
     public UserResponse getUserDTOById(Long id) {
         return userRepository.findById(id)
-                .map(u -> mapper.map(u, UserResponse.class))
-                .orElseThrow(() -> new UserNotFoundException(id));
+                             .map(u -> mapper.map(u, UserResponse.class))
+                             .orElseThrow(() -> new UserNotFoundException(id));
 
     }
     @Override
     public User getById(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException(id));
+                             .orElseThrow(() -> new UserNotFoundException(id));
 
     }
     @Override
     public List<UserResponse> getAll() {
         List<User> users = userRepository.findAll();
-        List<UserResponse>  userDTOS = users
+        return users
                 .stream()
                 .map(user -> mapper.map(user, UserResponse.class))
                 .collect(Collectors.toList());
-        return userDTOS;
     }
 
     @Override
     public void deleteUserById(Long id) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException(id));
-
+       User user =  userRepository.findById(id)
+                                 .orElseThrow(() -> new UserNotFoundException(id));
         userRepository.delete(user);
     }
 
@@ -58,16 +55,9 @@ public class UserServiceImplementation implements UserService {
 
     @Override
     public User updateUser(Long id, User updatedUser) {
-        Optional<User> optionalUser = userRepository.findById(id);
-        if (optionalUser.isEmpty()) {
-            throw new UserNotFoundException(id);
-        }
-        User user = optionalUser.get();
-        user.setUserName(updatedUser.getUserName());
-        user.setHashedPassword(updatedUser.getHashedPassword());
-        user.setSalt(updatedUser.getSalt());
-        return userRepository.save(user);
+        User existingUser =  userRepository.findById(id)
+                            .orElseThrow(() -> new UserNotFoundException(id));
+        return userRepository.save(existingUser.updatedFrom(updatedUser));
     }
-
 }
 

@@ -76,7 +76,10 @@ public class User {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(id, user.id) && Objects.equals(userName, user.userName) && Objects.equals(hashedPassword, user.hashedPassword) && Objects.equals(salt, user.salt);
+        return Objects.equals(id, user.id)
+                      && Objects.equals(userName, user.userName)
+                      && Objects.equals(hashedPassword, user.hashedPassword)
+                      && Objects.equals(salt, user.salt);
     }
 
     @Override
@@ -92,5 +95,12 @@ public class User {
                 ", hashedPassword='" + hashedPassword + '\'' +
                 ", salt='" + salt + '\'' +
                 '}';
+    }
+
+      public User updatedFrom(User updatedUser) {
+        this.setUserName(updatedUser.getUserName());
+        this.setHashedPassword(updatedUser.getHashedPassword());
+        this.setSalt(updatedUser.getSalt());
+        return this;
     }
 }
