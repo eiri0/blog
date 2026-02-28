@@ -6,7 +6,7 @@ import java.util.List;
 public class ApiResponseHandler {
 
 
-    public static <T> ApiResponse<T> sucess(T data, String message, String path) {
+    public static <T> ApiResponse<T> success(T data, String message, String path) {
         ApiResponse<T> response = new ApiResponse<>();
         response.setSuccess(true);
         response.setMessage(message);

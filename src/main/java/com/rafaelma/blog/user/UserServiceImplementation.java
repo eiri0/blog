@@ -45,7 +45,7 @@ public class UserServiceImplementation implements UserService {
     public void deleteUserById(Long id) {
        User user =  userRepository.findById(id)
                                  .orElseThrow(() -> new UserNotFoundException(id));
-        userRepository.delete(user);
+       userRepository.delete(user);
     }
 
     @Override
