@@ -1,7 +1,6 @@
 package com.rafaelma.blog.shared;
 
 import com.rafaelma.blog.user.exception.UserNotFoundException;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -24,12 +23,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(UserNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<ApiResponse<?>> handlerUserNotFoundException(UserNotFoundException userNotFoundException, HttpServletRequest httpServletRequest) {
-        return new ResponseEntity<>(error(userNotFoundException.getMessage(), "User Not Found", 404, httpServletRequest.getRequestURI()), HttpStatus.NOT_FOUND);
+    public ResponseEntity<ApiResponse<?>> handlerUserNotFoundException(UserNotFoundException userNotFoundException) {
+        return new ResponseEntity<>(error(userNotFoundException.getMessage(), "User Not Found", 404), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, List<String>>> HandlerPostWithInvalidDate(MethodArgumentNotValidException ex) {
+    public ResponseEntity<Map<String, List<String>>> handlerPostWithInvalidDate(MethodArgumentNotValidException ex) {
         List<String> errors = ex.getBindingResult()
                                 .getFieldErrors()
                                 .stream().map(FieldError::getDefaultMessage)

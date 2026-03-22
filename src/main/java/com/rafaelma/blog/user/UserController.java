@@ -2,7 +2,6 @@ package com.rafaelma.blog.user;
 
 import com.rafaelma.blog.shared.ApiResponse;
 import com.rafaelma.blog.user.dto.UserResponse;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,33 +21,33 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<?>> getUserByID(@PathVariable("id") Long id, HttpServletRequest httpServletRequest) {
-        UserResponse userDTO = userService.getUserDTOById(id);
-        return new ResponseEntity<>(success(userDTO, "User retrieved successfully", httpServletRequest.getRequestURI()), HttpStatus.OK);
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse<UserResponse> getUserById(@PathVariable("id") Long id) {
+        return success(userService.getUserDTOById(id), "User retrieved successfully");
     }
 
     @GetMapping("")
-    public ResponseEntity<ApiResponse<List<UserResponse>>> getAllUsers(HttpServletRequest httpServletRequest) {
-        List<UserResponse> allUsers = userService.getAll();
-        return new ResponseEntity<>(success(allUsers, "Users retrieved successfully", httpServletRequest.getRequestURI()), HttpStatus.OK);
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse<List<UserResponse>> getAllUsers() {
+        return success(userService.getAll(), "Users retrieved successfully");
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable("id") Long id) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteUser(@PathVariable("id") Long id) {       
         userService.deleteUserById(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PostMapping("")
-    public ResponseEntity<User> saveUser(@RequestBody User user) {
-        User savedUser = userService.saveUser(user);
-        return new ResponseEntity<>(savedUser, HttpStatus.OK);
+    @ResponseStatus(HttpStatus.CREATED)
+    public ApiResponse<User> saveUser(@RequestBody User user) {
+        return success(userService.saveUser(user), "User created successfully");
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@RequestBody User user, Long id) {
-        User updatedUser = userService.updateUser(id, user);
-        return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse<User> updateUser(@RequestBody User user, Long id) {
+        return success(userService.updateUser(id, user), "User updated successfully");
     }
 
 }

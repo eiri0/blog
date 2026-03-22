@@ -6,7 +6,6 @@ import jakarta.validation.constraints.NotNull;
 
 import java.util.Objects;
 
-
 @Entity
 @Table(name = "tbl_user")
 public class User {
