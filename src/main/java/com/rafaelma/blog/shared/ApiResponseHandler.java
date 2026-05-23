@@ -33,7 +33,6 @@ public class ApiResponseHandler {
     }
 
     public static <T> ApiResponse<T> error(String error, String message, int errorCode) {
-        String path = ServletUriComponentsBuilder.fromCurrentRequest().build().getPath();
         return error(Arrays.asList(error), message, errorCode);
     }
 }

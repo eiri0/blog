@@ -3,7 +3,6 @@ package com.rafaelma.blog.user;
 import com.rafaelma.blog.shared.ApiResponse;
 import com.rafaelma.blog.user.dto.UserResponse;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
