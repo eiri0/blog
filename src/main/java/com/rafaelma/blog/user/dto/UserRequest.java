@@ -1,6 +1,5 @@
 package com.rafaelma.blog.user.dto;
 
-
 public class UserRequest {
 
     private String userName;
@@ -26,7 +25,5 @@ public class UserRequest {
     public void setPassword(String password) {
         this.password = password;
     }
-
-       
     
 }

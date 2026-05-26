@@ -1,6 +1,9 @@
 package com.rafaelma.blog.user;
 
+import com.rafaelma.blog.security.PasswordHasher;
+import com.rafaelma.blog.user.dto.UserRequest;
 import com.rafaelma.blog.user.dto.UserResponse;
+import com.rafaelma.blog.user.exception.UserAlreadyExistsException;
 import com.rafaelma.blog.user.exception.UserNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -34,23 +37,32 @@ public class UserServiceImplementation implements UserService {
     }
     @Override
     public List<UserResponse> getAll() {
-        List<User> users = userRepository.findAll();
-        return users
-                .stream()
-                .map(user -> mapper.map(user, UserResponse.class))
-                .collect(Collectors.toList());
+        return userRepository.findAll()
+                             .stream()
+                             .map(user -> mapper.map(user, UserResponse.class))
+                             .collect(Collectors.toList());
     }
 
     @Override
     public void deleteUserById(Long id) {
        User user =  userRepository.findById(id)
-                                 .orElseThrow(() -> new UserNotFoundException(id));
+                                  .orElseThrow(() -> new UserNotFoundException(id));
        userRepository.delete(user);
     }
 
     @Override
-    public User saveUser(User user) {
-        return userRepository.save(user);
+    public UserResponse saveUser(UserRequest userRequest) {
+        if (validateUserName(userRequest.getUserName())) {
+            throw new UserAlreadyExistsException(userRequest.getUserName());
+        }
+        User user = mapper.map(userRequest, User.class);
+        String salt = PasswordHasher.generateSalt();
+        String hashedPassword = PasswordHasher.hashPassword(userRequest.getPassword(), salt);
+        user.setHashedPassword(hashedPassword);
+        user.setSalt(salt);
+        User savedUser =  userRepository.save(user);
+        UserResponse userResponse = mapper.map(savedUser, UserResponse.class);
+        return userResponse;
     }
 
     @Override
@@ -58,6 +70,11 @@ public class UserServiceImplementation implements UserService {
         User existingUser =  userRepository.findById(id)
                             .orElseThrow(() -> new UserNotFoundException(id));
         return userRepository.save(existingUser.updatedFrom(updatedUser));
+    }
+
+    @Override
+    public boolean validateUserName(String userName) {
+        return userRepository.existsByUserName(userName);
     }
 }
 

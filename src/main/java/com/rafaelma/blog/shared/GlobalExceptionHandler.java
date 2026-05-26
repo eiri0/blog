@@ -17,10 +17,17 @@ import java.util.stream.Collectors;
 
 
 import static com.rafaelma.blog.shared.ApiResponseHandler.error;
+import com.rafaelma.blog.user.exception.UserAlreadyExistsException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ResponseEntity<ApiResponse<?>> handlerUserAlReadyExistsException(UserAlreadyExistsException userAlreadyExistsException){
+        return new ResponseEntity<>(error(userAlreadyExistsException.getMessage(), "User already exists", 409), HttpStatus.CONFLICT);
+    }
+    
     @ExceptionHandler(UserNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<ApiResponse<?>> handlerUserNotFoundException(UserNotFoundException userNotFoundException) {

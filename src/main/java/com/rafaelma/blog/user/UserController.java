@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 import static com.rafaelma.blog.shared.ApiResponseHandler.*;
+import com.rafaelma.blog.user.dto.UserRequest;
 
 @RestController
 @RequestMapping("/users")
@@ -39,8 +40,8 @@ public class UserController {
 
     @PostMapping("")
     @ResponseStatus(HttpStatus.CREATED)
-    public ApiResponse<User> saveUser(@RequestBody User user) {
-        return success(userService.saveUser(user), "User created successfully");
+    public ApiResponse<UserResponse> saveUser(@RequestBody UserRequest userRequest) {
+        return success(userService.saveUser(userRequest), "User created successfully");
     }
 
     @PutMapping("/{id}")
