@@ -1,13 +1,12 @@
 package com.rafaelma.blog.security;
 
-import org.mindrot.jbcrypt.BCrypt;
-
+import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 
 public class PasswordHasher {
 
     public static String hashPassword(String password) {
-        int rounds = 12;
-        return BCrypt.gensalt(rounds);
+         Argon2PasswordEncoder encoder = new Argon2PasswordEncoder(16, 32, 1, 60000, 10);
+        return encoder.encode(password);
     }
    
 }

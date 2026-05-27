@@ -1,10 +1,11 @@
 package com.rafaelma.blog.user;
 
-import com.rafaelma.blog.security.PasswordHasher;
+import static com.rafaelma.blog.security.PasswordHasher.hashPassword;
 import com.rafaelma.blog.user.dto.UserRequest;
 import com.rafaelma.blog.user.dto.UserResponse;
 import com.rafaelma.blog.user.exception.UserAlreadyExistsException;
 import com.rafaelma.blog.user.exception.UserNotFoundException;
+import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -51,17 +52,18 @@ public class UserServiceImplementation implements UserService {
     }
 
     @Override
+    @Transactional
     public UserResponse saveUser(UserRequest userRequest) {
         if (isUserTaken(userRequest.getUserName())) {
             throw new UserAlreadyExistsException(userRequest.getUserName());
         }
         
+        
+        String hashedPassword = hashPassword(userRequest.getPassword());
         User user = mapper.map(userRequest, User.class);
-        String hashedPassword = PasswordHasher.hashPassword(userRequest.getPassword());
         user.setHashedPassword(hashedPassword);
         User savedUser =  userRepository.save(user);
-        UserResponse userResponse = mapper.map(savedUser, UserResponse.class);
-        return userResponse;
+        return mapper.map(savedUser, UserResponse.class);
     }
 
     @Override
