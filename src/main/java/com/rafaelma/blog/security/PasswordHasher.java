@@ -5,12 +5,9 @@ import org.mindrot.jbcrypt.BCrypt;
 
 public class PasswordHasher {
 
-    public static String hashPassword(String password, String salt) {
-        return BCrypt.hashpw(password, salt);
+    public static String hashPassword(String password) {
+        int rounds = 12;
+        return BCrypt.gensalt(rounds);
     }
-    
-    public static String generateSalt() {
-        int logRounds = 12;
-        return BCrypt.gensalt(logRounds);
-    }
+   
 }

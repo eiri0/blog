@@ -12,11 +12,10 @@ public class User {
 
     public User() { }
 
-    public User(Long id, String userName, String hashedPassword, String salt) {
+    public User(Long id, String userName, String hashedPassword) {
         this.id = id;
         this.userName = userName;
         this.hashedPassword = hashedPassword;
-        this.salt = salt;
     }
 
     @Id
@@ -33,11 +32,6 @@ public class User {
     @NotNull
     @NotBlank
     private String hashedPassword;
-
-    @Column(name = "salt", nullable = false)
-    @NotNull
-    @NotBlank
-    private String salt;
 
     public Long getId() {
         return id;
@@ -63,27 +57,18 @@ public class User {
         this.hashedPassword = hashedPassword;
     }
 
-    public String getSalt() {
-        return salt;
-    }
-
-    public void setSalt(String salt) {
-        this.salt = salt;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
         return Objects.equals(id, user.id)
                       && Objects.equals(userName, user.userName)
-                      && Objects.equals(hashedPassword, user.hashedPassword)
-                      && Objects.equals(salt, user.salt);
+                      && Objects.equals(hashedPassword, user.hashedPassword);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, userName, hashedPassword, salt);
+        return Objects.hash(id, userName, hashedPassword);
     }
 
     @Override
@@ -92,14 +77,12 @@ public class User {
                 "id=" + id +
                 ", userName='" + userName + '\'' +
                 ", hashedPassword='" + hashedPassword + '\'' +
-                ", salt='" + salt + '\'' +
                 '}';
     }
 
       public User updatedFrom(User updatedUser) {
         this.setUserName(updatedUser.getUserName());
         this.setHashedPassword(updatedUser.getHashedPassword());
-        this.setSalt(updatedUser.getSalt());
         return this;
     }
 }

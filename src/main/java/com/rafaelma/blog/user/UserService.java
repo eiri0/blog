@@ -12,5 +12,5 @@ public interface UserService {
     void deleteUserById(Long id);
     UserResponse saveUser(UserRequest userResquest);
     User updateUser(Long id, User updatedUser);
-    boolean validateUserName(String userName);
+    boolean isUserTaken(String userName);
 }

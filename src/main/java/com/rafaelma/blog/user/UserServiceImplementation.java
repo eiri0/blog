@@ -52,14 +52,13 @@ public class UserServiceImplementation implements UserService {
 
     @Override
     public UserResponse saveUser(UserRequest userRequest) {
-        if (validateUserName(userRequest.getUserName())) {
+        if (isUserTaken(userRequest.getUserName())) {
             throw new UserAlreadyExistsException(userRequest.getUserName());
         }
+        
         User user = mapper.map(userRequest, User.class);
-        String salt = PasswordHasher.generateSalt();
-        String hashedPassword = PasswordHasher.hashPassword(userRequest.getPassword(), salt);
+        String hashedPassword = PasswordHasher.hashPassword(userRequest.getPassword());
         user.setHashedPassword(hashedPassword);
-        user.setSalt(salt);
         User savedUser =  userRepository.save(user);
         UserResponse userResponse = mapper.map(savedUser, UserResponse.class);
         return userResponse;
@@ -73,7 +72,7 @@ public class UserServiceImplementation implements UserService {
     }
 
     @Override
-    public boolean validateUserName(String userName) {
+    public boolean isUserTaken(String userName) {
         return userRepository.existsByUserName(userName);
     }
 }
