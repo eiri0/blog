@@ -58,7 +58,6 @@ public class UserServiceImplementation implements UserService {
             throw new UserAlreadyExistsException(userRequest.getUserName());
         }
         
-        
         String hashedPassword = hashPassword(userRequest.getPassword());
         User user = mapper.map(userRequest, User.class);
         user.setHashedPassword(hashedPassword);
@@ -68,14 +67,14 @@ public class UserServiceImplementation implements UserService {
 
     @Override
     public User updateUser(Long id, User updatedUser) {
-        User existingUser =  userRepository.findById(id)
-                            .orElseThrow(() -> new UserNotFoundException(id));
-        return userRepository.save(existingUser.updatedFrom(updatedUser));
+        User user =  userRepository.findById(id)
+                                   .orElseThrow(() -> new UserNotFoundException(id));
+        return userRepository.save(user.updatedFrom(updatedUser));
     }
 
     @Override
     public boolean isUserTaken(String userName) {
-        return userRepository.existsByUserName(userName);
+        return userRepository.existsByUserNameIgnoreCase(userName);
     }
 }
 
